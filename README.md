@@ -3,90 +3,92 @@
 <head>
     <meta charset="UTF-8">
 </head>
-<body>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height: 1.6; color: #24292e;">
 
-  <h1>SyncParking: Process Control & Synchronization (Windows & Linux)</h1>
+    <h1 style="color: #0366d6; border-bottom: 2px solid #eaecef; padding-bottom: 0.3em;">
+        🚗 SyncParking: Process Control & Synchronization
+    </h1>
 
-  <p>
-        This repository contains two implementations of a multi-threaded parking simulation system. The project focuses on advanced 
-        <strong>Inter-Process Communication (IPC)</strong>, thread synchronization, and memory management algorithms applied to physical space allocation.
-    </p>
-
-  <hr>
-
-  <h2>Overview</h2>
     <p>
-        The simulation manages a parking lane where cars (represented by threads) arrive and attempt to park using different 
-        dynamic allocation strategies. The system ensures collision-free movement and orderly access to shared resources 
-        using low-level OS primitives.
+        This repository contains dual implementations (Windows & Linux) of a multi-threaded parking simulation. 
+        It explores <strong>Inter-Process Communication (IPC)</strong> and advanced synchronization primitives.
     </p>
 
-  <h2>Core Features</h2>
-    <ul>
-        <li><strong>Multi-threaded Architecture:</strong> Each vehicle operates as an independent thread (Chauffeur thread).</li>
-        <li><strong>Memory Allocation Algorithms:</strong> Implementation of the four classic strategies for spot searching:
-            <ul>
-                <li><em>First Fit:</em> Allocates the first available block large enough.</li>
-                <li><em>Next Fit:</em> Circular search starting from the last allocation point.</li>
-                <li><em>Best Fit:</em> Search for the smallest available block that fits.</li>
-                <li><em>Worst Fit:</em> Allocates the largest available block.</li>
-            </ul>
+    <!-- Info Box -->
+    <div style="background-color: #e7f3ff; border-left: 5px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 4px;">
+        <strong style="color: #0d47a1;">💡 Core Objective:</strong> 
+        The project simulates physical space allocation using <strong>Dynamic Memory Management Algorithms</strong> applied to a parking lane.
+    </div>
+
+    <h2 style="color: #2f363d;">Overview</h2>
+    <p>
+        The simulation manages a parking lane where cars (independent threads) attempt to park using specific allocation strategies. 
+        Ordered access and collision-free movement are guaranteed via low-level OS primitives.
+    </p>
+
+    <h2 style="color: #2f363d;">🧠 Memory Allocation Algorithms</h2>
+    <p>Implemented the four classic strategies for dynamic spot searching:</p>
+    <ul style="list-style-type: none; padding-left: 0;">
+        <li style="margin-bottom: 8px;">
+            <span style="background-color: #dafbe1; color: #1a7f37; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 0.9em;">First Fit</span> 
+            Allocates the first available block large enough.
         </li>
-        <li><strong>Synchronization Primitives:</strong> Comprehensive use of Mutexes and Events to manage shared state.</li>
+        <li style="margin-bottom: 8px;">
+            <span style="background-color: #ddf4ff; color: #0969da; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 0.9em;">Next Fit</span> 
+            Circular search starting from the last allocation point.
+        </li>
+        <li style="margin-bottom: 8px;">
+            <span style="background-color: #fff8c5; color: #9a6700; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 0.9em;">Best Fit</span> 
+            Finds the smallest available block to minimize fragmentation.
+        </li>
+        <li style="margin-bottom: 8px;">
+            <span style="background-color: #ffebe9; color: #cf222e; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 0.9em;">Worst Fit</span> 
+            Allocates the largest available block.
+        </li>
     </ul>
 
-  <hr>
+    <hr style="height: 0.25em; padding: 0; margin: 24px 0; background-color: #e1e4e8; border: 0;">
 
-   <h2>Windows Implementation (Win32 API)</h2>
-    <p>The Windows version utilizes the following synchronization mechanisms:</p>
+    <h2 style="color: #0366d6;">🪟 Windows Implementation (Win32 API)</h2>
     <ul>
-        <li><strong>Mutexes (<code>hMutexAcera</code>):</strong> Ensures exclusive access to global arrays (parking spots and carril).</li>
-        <li><strong>Auto-reset Events (<code>hEventoTurno</code>):</strong> Implements a <strong>FIFO Barrier</strong> to manage the entry order of vehicles.</li>
-        <li><strong>Manual-reset Events (<code>hEventoCarril</code>):</strong> Controls traffic flow, allowing threads to proceed or wait based on lane occupancy.</li>
-        <li><strong>Dynamic Linking:</strong> Integration with external <code>.dll</code> libraries using function pointers.</li>
+        <li><strong>Mutexes:</strong> Thread-safe access to shared parking arrays.</li>
+        <li><strong>Auto-reset Events:</strong> Implements a <strong>FIFO Barrier</strong> for orderly entry.</li>
+        <li><strong>Manual-reset Events:</strong> Global traffic flow control (Open/Closed lane).</li>
+        <li><strong>Dynamic Linking:</strong> Advanced DLL integration using <code>GetProcAddress</code>.</li>
     </ul>
 
-   <h2>Linux Implementation (POSIX Threads)</h2>
-    <p>The Linux version mirrors the logic using POSIX standards:</p>
+    <h2 style="color: #d73a49;">🐧 Linux Implementation (POSIX)</h2>
     <ul>
-        <li><strong>Pthreads:</strong> Thread management for vehicle lifecycle.</li>
-        <li><strong>Semaphores/Mutexes:</strong> Protection of shared memory segments.</li>
-        <li><strong>Condition Variables:</strong> Used to replicate event-based signaling.</li>
+        <li><strong>Pthreads:</strong> Management of the vehicle lifecycle.</li>
+        <li><strong>Semaphores:</strong> Critical section protection.</li>
+        <li><strong>Condition Variables:</strong> Signal-based thread coordination.</li>
     </ul>
 
-  <hr>
-
-   <h2>How to Run</h2>
-    
-  <h3>Windows</h3>
-    <div style="background-color: #f6f8fa; padding: 10px; border-radius: 6px;">
-        <code>
-            # Compile using GCC<br>
-            gcc -o parking2.exe main.c -L. -lparking2<br><br>
-            # Run with [delay] and optional [D] for Debug mode<br>
-            ./parking2.exe 100 D
-        </code>
+    <!-- Important Box -->
+    <div style="background-color: #fff5f5; border-left: 5px solid #f44336; padding: 15px; margin: 20px 0; border-radius: 4px;">
+        <strong style="color: #b71c1c;">⚠️ Technical Note:</strong> 
+        Atomic operations like <code>SignalObjectAndWait</code> are used to prevent <strong>Deadlocks</strong> and <strong>Race Conditions</strong> during high-concurrency maneuvers.
     </div>
 
-  <h3>Linux</h3>
-    <div style="background-color: #f6f8fa; padding: 10px; border-radius: 6px; margin-top: 10px;">
-        <code>
-            # Compile using terminal<br>
-            gcc -pthread -o parking_linux main.c<br><br>
-            # Run<br>
-            ./parking_linux 100
-        </code>
-    </div>
-
-  <hr>
-
-  <h2>Technical Concepts Covered</h2>
-    <ul>
-        <li><strong>Race Conditions:</strong> Prevented through strict Mutex locking.</li>
-        <li><strong>Deadlocks:</strong> Avoided using atomic operations like <code>SignalObjectAndWait</code>.</li>
-        <li><strong>Fragmentation:</strong> Analyzed through different allocation algorithms.</li>
-        <li><strong>Daisy Chain Signaling:</strong> Ensuring thread wake-up propagation in FIFO queues.</li>
-    </ul>
+    <h2 style="color: #2f363d;">Key Concepts Covered</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="background-color: #f6f8fa;">
+            <th style="border: 1px solid #dfe2e5; padding: 8px; text-align: left;">Concept</th>
+            <th style="border: 1px solid #dfe2e5; padding: 8px; text-align: left;">Resolution Mechanism</th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #dfe2e5; padding: 8px;"><strong>Entry Order</strong></td>
+            <td style="border: 1px solid #dfe2e5; padding: 8px;">FIFO Queue via Event Signaling</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #dfe2e5; padding: 8px;"><strong>Lane Collisions</strong></td>
+            <td style="border: 1px solid #dfe2e5; padding: 8px;">Manual-reset Traffic Events</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #dfe2e5; padding: 8px;"><strong>Resource Protection</strong></td>
+            <td style="border: 1px solid #dfe2e5; padding: 8px;">Mutex-guarded Global Arrays</td>
+        </tr>
+    </table>
 
 </body>
 </html>
